@@ -1,1 +1,1 @@
-# minesweeper
+# javascript puzzle game
