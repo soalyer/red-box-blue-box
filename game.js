@@ -292,6 +292,10 @@ function gameLoop(timestamp) {
         ctx.fillText("       to move",(canvas.width-tileWidth*bLength)/4-canvas.width/7,(canvas.height/2 + (Math.floor(canvas.width/24))));
         ctx.fillText("Retry with R",((canvas.width-tileWidth*bLength)/2 + tileWidth*bLength + canvas.width)/2-canvas.width/9,(canvas.height/2));
     }
+    if (levelNum == 8) {
+        ctx.font = `${Math.floor(canvas.width/24)}px Nunito`
+        ctx.fillText("Thanks for playing",(canvas.width-tileWidth*bLength)/4-canvas.width/7,(canvas.height/2));
+    }
     ctx.font = `${Math.floor(canvas.height/24)}px Nunito`
     ctx.fillText(`Level ${levelNum+1}/${levels.length}`,(canvas.width-tileWidth*bLength)/2,(canvas.height-tileWidth*bHeight)/2-15);
     ctx.fillRect((canvas.width-tileWidth*bLength)/2,(canvas.height-tileWidth*bHeight)/2,tileWidth*bLength,tileWidth*bHeight)
