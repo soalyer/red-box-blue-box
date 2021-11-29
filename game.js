@@ -314,7 +314,7 @@ function check(e) {
             moveMovables(0,1);
             break;
         case 82: 
-            if (levelNum == levels.length-2) {
+            if (levelNum == levels.length-1) {
                 levelNum -= levels.length-1;
             }
             refreshLevel();
