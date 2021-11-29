@@ -20,7 +20,7 @@ if (localStorage.num) {
     var levelNum = Number(localStorage.num);
 }
 else {
-var levelNum = -1;
+var levelNum = 0;
 }
 var level;
 var spawn = [
@@ -123,9 +123,8 @@ var levels = [
 ];
 
 
-function nextLevel() {
-    levelNum += 1;
-    localStorage.setItem("num",levelNum-1);
+function refreshLevel() {
+    localStorage.setItem("num",levelNum);
     level = JSON.parse(JSON.stringify(levels[levelNum]))
     bHeight = level.length;
     bLength = level[0].length;
@@ -174,7 +173,7 @@ function nextLevel() {
         }
     }
 }
-nextLevel();
+refreshLevel();
 function drawBoxes() {
     var complete = true;
     for (let i = 0; i < bHeight; i++) {
@@ -209,7 +208,8 @@ function drawBoxes() {
             )
             if (!down && x >= 100) {
                 down = true;
-                nextLevel();
+                levelNum += 1
+                refreshLevel();
             }
             if (x >= 300) {
                 completeOnce = true;
@@ -314,11 +314,10 @@ function check(e) {
             moveMovables(0,1);
             break;
         case 82: 
-            levelNum -= 1; 
             if (levelNum == levels.length-2) {
                 levelNum -= levels.length-1;
             }
-            nextLevel();
+            refreshLevel();
             break;
     }
 }
