@@ -16,12 +16,6 @@ var lastTick = 0
 var movX = false;
 var movY = false;
 var tileWidth = canvas.height/8;
-if (localStorage.num) {
-    var levelNum = Number(localStorage.num);
-}
-else {
-var levelNum = 0;
-}
 var level;
 var spawn = [
     [0,0],
@@ -121,7 +115,12 @@ var levels = [
         [[5]]
     ]
 ];
-
+if (localStorage.num && localStorage.num >= 0 && localStorage.num < levels.length) {
+    var levelNum = Number(localStorage.num);
+}
+else {
+var levelNum = 0;
+}
 
 function refreshLevel() {
     localStorage.setItem("num",levelNum);
@@ -324,15 +323,21 @@ function check(e) {
 
 le = 0.1
 
+if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+    canvasSize = 1
+}
+else{canvasSize = 4}
+
 function gameLoop(timestamp) {
-    ctx.canvas.width = window.innerWidth*4;
-    ctx.canvas.height = window.innerHeight*4;
+    requestAnimationFrame(gameLoop)
+    ctx.canvas.width = window.innerWidth*canvasSize;
+    ctx.canvas.height = window.innerHeight*canvasSize;
     tileWidth = canvas.height/8;
     player.radius = tileWidth/2;
+    /*
     let dt = timestamp-lastTick;
     lastTick = timestamp;
-
-    
+    */
     ctx.fillStyle = "#1A5E63";
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = "#028090";
@@ -357,7 +362,6 @@ function gameLoop(timestamp) {
     }  
     ctx.fillStyle = `rgba(26, 94, 99, ${fade})`;
     ctx.fillRect(0,0,canvas.width,canvas.height);
-    requestAnimationFrame(gameLoop)
 }
 
 requestAnimationFrame(gameLoop)
