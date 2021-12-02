@@ -341,7 +341,7 @@ touchendY = 0
 document.addEventListener('touchstart', e => {
     touchstartX = e.changedTouches[0].screenX
     touchstartY = e.changedTouches[0].screenY
-})
+}, {passive:false})
 
 document.addEventListener('touchend', e => {
     touchendX = e.changedTouches[0].screenX
