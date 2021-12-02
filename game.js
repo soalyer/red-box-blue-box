@@ -339,6 +339,7 @@ touchstartY = 0
 touchendY = 0
 
 document.addEventListener('touchstart', e => {
+    e.preventDefault()
     touchstartX = e.changedTouches[0].screenX
     touchstartY = e.changedTouches[0].screenY
 }, {passive:false})
