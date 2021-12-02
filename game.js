@@ -330,13 +330,39 @@ le = 0.1
 if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
     canvasSize = 1
 }
+
 else{canvasSize = 4}
+
+touchstartX = 0
+touchendX = 0
+touchstartY = 0
+touchendY = 0
+
+document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX
+    touchstartY = e.changedTouches[0].screenY
+})
+
+document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX
+    touchendY = e.changedTouches[0].screenY
+    if (Math.abs(touchendX-touchstartX) > Math.abs(touchendY-touchstartY)) {
+        if (touchendX < touchstartX) moveMovables(-1,0);
+        if (touchendX > touchstartX) moveMovables(1,0);
+    }
+    else {
+        if (touchendY < touchstartY) moveMovables(0,-1);
+        if (touchendY > touchstartY) moveMovables(0,1);
+    }
+})
+
 
 function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop)
     ctx.canvas.width = window.innerWidth*canvasSize;
     ctx.canvas.height = window.innerHeight*canvasSize;
     tileWidth = canvas.height/8;
+    if (tileWidth*bLength > canvas.width) {tileWidth = canvas.width/(bLength+1)}
     player.radius = tileWidth/2;
     /*
     let dt = timestamp-lastTick;
