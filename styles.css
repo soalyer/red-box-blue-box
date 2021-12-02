@@ -4,4 +4,7 @@ body {
     margin: 0;
     overflow: hidden;
     background-color: #1A5E63;
+    position:fixed;
+    top:0;
+    bottom: 0;
 }
