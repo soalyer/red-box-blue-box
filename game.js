@@ -300,15 +300,19 @@ window.addEventListener('keydown',this.check,false);
 function check(e) {
     var code = e.keyCode;
     switch (code) {
+        case 65:
         case 37: 
             moveMovables(-1,0);
             break;
+        case 87:
         case 38:
             moveMovables(0,-1);
             break;
+        case 68:
         case 39: 
             moveMovables(1,0);
             break;
+        case 83:
         case 40: 
             moveMovables(0,1);
             break;
