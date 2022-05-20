@@ -17,6 +17,7 @@ var movX = false;
 var movY = false;
 var tileWidth = canvas.height/8;
 var level;
+var bonusName = "";
 var spawn = [
     [0,0],
     [0,0],
@@ -123,7 +124,10 @@ var levelNum = 0;
 }
 
 function refreshLevel() {
-    localStorage.setItem("num",levelNum);
+    if (bonusName == "")
+    {
+        localStorage.setItem("num",levelNum);
+    }
     level = JSON.parse(JSON.stringify(levels[levelNum]))
     bHeight = level.length;
     bLength = level[0].length;
@@ -131,44 +135,40 @@ function refreshLevel() {
     player.coords.x = spawn[levelNum][0];
     player.coords.y = spawn[levelNum][1];
     player.posCoords.x = player.coords.x;
-    player.posCoords.y = player.coords.x;
+    player.posCoords.y = player.coords.y;
     for (let i = 0; i < bHeight; i++) {
         for (let j = 0; j < bLength; j++) {
             if (level[i][j] == 2) {
                 level[i][j] = new Wall(j,i,tileWidth,"#1A5E63");
-                level[i][j].coords.x = j;
-                level[i][j].coords.y = i;
             }
             if (level[i][j] == 3) {
                 level[i][j] = new Box(j,i,tileWidth,'#E23B3B');
-                level[i][j].coords.x = j;
-                level[i][j].coords.y = i;
             } 
             if (level[i][j] == 4) {
                 level[i][j] = new Box(j,i,tileWidth,'#3C4CE0');
-                level[i][j].coords.x = j;
-                level[i][j].coords.y = i;
             } 
             if (level[i][j] == 5) {
                 level[i][j] = new Pad(j,i,tileWidth,'#E23B3B');
-                level[i][j].coords.x = j;
-                level[i][j].coords.y = i;
             } 
             if (level[i][j] == 6) {
                 level[i][j] = new Pad(j,i,tileWidth,'#3C4CE0');
-                level[i][j].coords.x = j;
-                level[i][j].coords.y = i;
             } 
             if (level[i][j] == 7) {
                 level[i][j] = new Box(j,i,tileWidth,'#E23B3B',true);
-                level[i][j].coords.x = j;
-                level[i][j].coords.y = i;
             } 
             if (level[i][j] == 8) {
                 level[i][j] = new Box(j,i,tileWidth,'#3C4CE0',true);
+            } 
+            if (level[i][j][0] == 'b') {
+                level[i][j] = new Box(j,i,tileWidth,level[i][j].substring(1,8));
+            } 
+            if (level[i][j][0] == 'p') {
+                level[i][j] = new Pad(j,i,tileWidth,level[i][j].substring(1,8));
+            } 
+            if (level[i][j] > 1) {
                 level[i][j].coords.x = j;
                 level[i][j].coords.y = i;
-            } 
+            }
         }
     }
 }
@@ -208,6 +208,7 @@ function drawBoxes() {
             if (!down && x >= 100) {
                 down = true;
                 levelNum += 1
+                bonusName = ""
                 refreshLevel();
             }
             if (x >= 300) {
@@ -322,6 +323,10 @@ function check(e) {
             }
             refreshLevel();
             break;
+        case 67:
+            levelBoard.classList.toggle("fade")
+            break;
+
     }
 }
 
@@ -330,13 +335,40 @@ le = 0.1
 if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
     canvasSize = 1
 }
+
 else{canvasSize = 4}
+
+touchstartX = 0
+touchendX = 0
+touchstartY = 0
+touchendY = 0
+
+document.addEventListener('touchstart', e => {
+    e.preventDefault()
+    touchstartX = e.changedTouches[0].screenX
+    touchstartY = e.changedTouches[0].screenY
+}, {passive:false})
+
+document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX
+    touchendY = e.changedTouches[0].screenY
+    if (Math.abs(touchendX-touchstartX) > Math.abs(touchendY-touchstartY)) {
+        if (touchendX < touchstartX) moveMovables(-1,0);
+        if (touchendX > touchstartX) moveMovables(1,0);
+    }
+    else {
+        if (touchendY < touchstartY) moveMovables(0,-1);
+        if (touchendY > touchstartY) moveMovables(0,1);
+    }
+})
+
 
 function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop)
     ctx.canvas.width = window.innerWidth*canvasSize;
     ctx.canvas.height = window.innerHeight*canvasSize;
     tileWidth = canvas.height/8;
+    if (tileWidth*bLength > canvas.width) {tileWidth = canvas.width/(bLength+1)}
     player.radius = tileWidth/2;
     /*
     let dt = timestamp-lastTick;
@@ -357,7 +389,12 @@ function gameLoop(timestamp) {
         ctx.fillText("Play again with R",((canvas.width-tileWidth*bLength)/2 + tileWidth*bLength + canvas.width)/2-canvas.width/6,(canvas.height/2));
     }
     ctx.font = `${Math.floor(canvas.height/24)}px Nunito`
-    ctx.fillText(`Level ${levelNum+1}/${levels.length-1}`,(canvas.width-tileWidth*bLength)/2,(canvas.height-tileWidth*bHeight)/2-15);
+    if (bonusName == "") {
+        ctx.fillText(`Level ${levelNum+1}/${levels.length-1}`,(canvas.width-tileWidth*bLength)/2,(canvas.height-tileWidth*bHeight)/2-15);
+    }
+    else {
+        ctx.fillText(bonusName,(canvas.width-tileWidth*bLength)/2,(canvas.height-tileWidth*bHeight)/2-15);
+    }
     ctx.fillRect((canvas.width-tileWidth*bLength)/2,(canvas.height-tileWidth*bHeight)/2,tileWidth*bLength,tileWidth*bHeight)
     drawBoxes(); 
     for (let i = movable.length-1; i >= 0; i--) {
@@ -369,3 +406,78 @@ function gameLoop(timestamp) {
 }
 
 requestAnimationFrame(gameLoop)
+
+//////////////////////
+/* BONUS LEVEL LIST */
+//////////////////////
+
+var bonusLevels = [
+	[
+		"harder lvl 4",
+		[
+			[0, 0, 0, 2, 2],
+			[0, 4, 4, 6, 2],
+			[0, 4, 3, 5, 6],
+			[0, 4, 4, 6, 2],
+			[0, 0, 0, 2, 2]
+		],
+		[0, 0]
+	],
+	[
+		"test level",
+		[
+			[0, 0, 0, 0],
+			[0, 0, 0, 3],
+			[0, 4, 3, 0],
+			[0, 3, 0, 6]
+		],
+		[1, 0]
+	],
+    [
+		"test level 2",
+		[
+			[5, 0, 0, 0, 0, 5],
+            [0, 4, 4, 4, 4, 0],
+            [0, 4, 3, 3, 4, 0],
+            [0, 4, 3, 3, 4, 0],
+            [0, 4, 4, 4, 4, 0],
+            [5, 0, 0, 0, 0, 5],
+		],
+		[0, 0]
+	],
+    [
+		"test level 3",
+		[
+			[0, "p#e2863b", 0, 0, 6],
+			[0, "b#a83be2", "b#6de23b", 0, 0],
+			["p#3be29f", "b#e2863b", 0, "b#3be29f", 0],
+			[0, 4, 3, 0, 0],
+			[5, 0, "p#6de23b", "p#a83be2", 0]
+		],
+		[0, 0]
+	],
+]
+
+//////////////////////
+//////////////////////
+//////////////////////
+
+var levelList = document.getElementById("level-list")
+var levelBoard = document.getElementById("custom-level")
+for(var i = 0; i < bonusLevels.length; i++) {
+    var opt = bonusLevels[i];
+    var el = document.createElement("option");
+    el.textContent = opt[0];
+    el.value = i;
+    levelList.appendChild(el);
+}
+
+document.getElementById('level-confirm').onclick = function() {
+    let bonus = levelList.value
+    levelNum = 10
+    bonusName = bonusLevels[bonus][0]
+    levels[levelNum] = bonusLevels[bonus][1]
+    spawn[levelNum] = bonusLevels[bonus][2]
+    refreshLevel()
+    levelBoard.classList.toggle("fade")
+ };

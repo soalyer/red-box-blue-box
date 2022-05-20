@@ -4,4 +4,56 @@ body {
     margin: 0;
     overflow: hidden;
     background-color: #1A5E63;
+    position:fixed;
+    top:0;
+    bottom: 0;
+    overscroll-behavior-y: contain;
+}
+
+#custom-level {
+    opacity: 0;
+    transition: opacity 0.2s;
+    position: absolute;
+    top: 50%;
+    left: 200%;
+    transform: translate(-50%, -50%);
+    width: 22vh;
+    height: 22vh;
+    border-radius: 3vh;
+    background-color: rgba(0,0,0,0.9);
+    color: white;
+    text-align: center;
+    padding: 3vh;
+    font-size: 3vh;
+}
+
+#level-list {
+    background-color: black;
+    color: white;
+    width: 15vh;
+    height: 4vh;
+    font-size: 2vh;
+    font-family: 'Nunito', sans-serif;
+}
+
+#custom-level.fade {
+    opacity: 1;
+    left: 50%;
+}
+
+
+
+#level-confirm {
+    height: 4vh;
+    width: 8vh;
+    border-radius: 0.5vh;
+    outline-style: solid;
+    outline-width: 0.3vh;
+    outline-color: gray;
+    background-color: black;
+    color: white;
+}
+
+#level-confirm:hover {
+    background-color: rgb(27, 27, 27);
 }
