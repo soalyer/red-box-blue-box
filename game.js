@@ -38,7 +38,11 @@ var levels = [
     2 = wall
     3,4 = red, blue box
     5,6 = red, blue pad
-    7,8 = red, blue movable box */
+    7,8 = red, blue movable box 
+    9 = one-use tiles 
+    b + hexcode = custom box
+    p + hexcode = custom pad
+    */
     [
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
@@ -159,6 +163,9 @@ function refreshLevel() {
             if (level[i][j] == 8) {
                 level[i][j] = new Box(j,i,tileWidth,'#3C4CE0',true);
             } 
+            if (level[i][j] == 9) {
+                level[i][j] = new Fade(j,i,tileWidth,'#1A5E63',false,false); 
+            } 
             if (level[i][j][0] == 'b') {
                 level[i][j] = new Box(j,i,tileWidth,level[i][j].substring(1,8));
             } 
@@ -186,11 +193,28 @@ function drawBoxes() {
     }
     for (let i = 0; i < bHeight; i++) {
         for (let j = 0; j < bLength; j++) {
-            if (level[i][j] instanceof Box || level[i][j] instanceof Wall) {
+            if (level[i][j] instanceof Fade && i == player.coords.y && j == player.coords.x) {
+                level[i][j].passed = true;
+            }
+            if (level[i][j] instanceof Fade && level[i][j].passed == true && !(i == player.coords.y && j == player.coords.x)) {
+                level[i][j] = new Wall(j,i,tileWidth,"#1A5E63")
+            }
+            if (level[i][j] instanceof Wall || level[i][j] instanceof Fade) {
                 level[i][j].size = tileWidth;
                 level[i][j].draw(ctx);
             }
-            
+            if (level[i][j] instanceof Box) {
+                level[i][j].size = tileWidth;
+                level[i][j].draw(ctx);
+            }
+        }
+    }
+    for (let i = 0; i < bHeight; i++) {
+        for (let j = 0; j < bLength; j++) {
+            if (level[i][j] instanceof Box) {
+                level[i][j].size = tileWidth;
+                level[i][j].draw(ctx);
+            }
         }
     }
     if (complete && completeOnce) {
@@ -411,6 +435,16 @@ requestAnimationFrame(gameLoop)
 /* BONUS LEVEL LIST */
 //////////////////////
 
+/* 
+    0,1 = nothing
+    2 = wall
+    3,4 = red, blue box
+    5,6 = red, blue pad
+    7,8 = red, blue movable box 
+    9 = one-use tiles 
+    b + hexcode = custom box
+    p + hexcode = custom pad
+*/
 var bonusLevels = [
 	[
 		"harder lvl 4",
@@ -453,6 +487,41 @@ var bonusLevels = [
 			["p#3be29f", "b#e2863b", 0, "b#3be29f", 0],
 			[0, 4, 3, 0, 0],
 			[5, 0, "p#6de23b", "p#a83be2", 0]
+		],
+		[0, 0]
+	],
+    [
+		"One-use tiles 1",
+		[
+            [0, 0, 2, 0, 0],
+            [0, 5, 9, 0, 0],
+            [0, 0, 2, 3, 0],
+            [0, 0, 9, 0, 0],
+            [0, 0, 2, 0, 0],
+		],
+		[0, 0]
+	],
+    [
+		"One-use tiles 2",
+		[
+            [9, 9, 9, 9, 9],
+			[9, 6, 0, 3, 9],
+            [9, 9, 9, 9, 9],
+            [0, 0, 0, 0, 0],
+            [9, 9, 9, 9, 9],
+            [9, 5, 0, 4, 9],
+            [9, 9, 9, 9, 9],
+		],
+		[2, 3]
+	],
+    [
+		"One-use tiles 3",
+		[
+            [0, 0, 0, 9, 9, 9, 0, 0, 0],
+            [0, 3, 0, 9, 9, 9, 0, 'p#9f3de0', 0],
+            [0, 'b#e03daf', 0, 9, 9, 9, 0, 'p#e03daf', 0],
+            [0, 'b#9f3de00', 0, 9, 9, 9, 0, 5, 0],
+            [0, 0, 0, 9, 9, 9, 0, 0, 0]
 		],
 		[0, 0]
 	],
