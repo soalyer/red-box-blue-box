@@ -46,7 +46,7 @@ class Player {
 }
 
 class Tile {
-    constructor(xPos,yPos,diameter,col,move) {
+    constructor(xPos,yPos,diameter,col,move,passed) {
         if (move) {
             this.movable = true;
             movable.push(this);
@@ -125,5 +125,18 @@ class Wall extends Tile {
         }
         ctx.fillStyle = this.color;
             ctx.fillRect(this.position.x-0.6,this.position.y-0.6,this.size+1.2,this.size+1.2);
+    }
+}
+
+class Fade extends Tile {
+    draw(ctx) {
+        this.position = {
+            x: this.coords.x*tileWidth+(canvas.width-tileWidth*bLength)/2,
+            y: this.coords.y*tileWidth+tileWidth/2 + (canvas.height-tileWidth*(bHeight+1))/2
+        }
+        ctx.fillStyle = 'rgba(0,0,0,0.1)';
+        ctx.fillRect(this.position.x,this.position.y,this.size,this.size);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.position.x+this.size/2.5,this.position.y+this.size/2.5,this.size*0.2,this.size*0.2);
     }
 }
