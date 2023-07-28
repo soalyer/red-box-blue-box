@@ -356,11 +356,13 @@ function check(e) {
 
 le = 0.1
 
-if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
-    canvasSize = 1
+var isChromium = !!window.chrome
+
+if(isChromium){
+    canvasSize = 4
 }
 
-else{canvasSize = 4}
+else{canvasSize = 1}
 
 touchstartX = 0
 touchendX = 0
